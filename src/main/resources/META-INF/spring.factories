@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+br.com.damsete.logging.configs.LoggingConfig
