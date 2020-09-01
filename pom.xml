@@ -10,7 +10,7 @@
 
     <groupId>br.com.damsete</groupId>
     <artifactId>logging</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -341,7 +341,7 @@
         <connection>scm:git:git://github.com/andretads/logging.git</connection>
         <developerConnection>scm:git:git@github.com:andretads/logging.git</developerConnection>
         <url>https://github.com/andretads/logging</url>
-        <tag>HEAD</tag>
+        <tag>logging-0.0.2</tag>
     </scm>
 
     <reporting>
