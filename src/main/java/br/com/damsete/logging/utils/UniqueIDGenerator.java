@@ -14,10 +14,10 @@ public class UniqueIDGenerator {
         ThreadContext.remove(CORRELATION_ID_HEADER_NAME);
         ThreadContext.remove(REQUEST_ID_HEADER_NAME);
 
-        String requestId = UUID.randomUUID().toString();
+        var requestId = UUID.randomUUID().toString();
         ThreadContext.put(REQUEST_ID_HEADER_NAME, requestId);
 
-        String correlationId = request.getHeader(CORRELATION_ID_HEADER_NAME);
+        var correlationId = request.getHeader(CORRELATION_ID_HEADER_NAME);
         if (correlationId == null) {
             correlationId = UUID.randomUUID().toString();
         }

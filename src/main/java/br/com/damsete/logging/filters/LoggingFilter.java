@@ -10,12 +10,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.security.core.Authentication;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StopWatch;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.util.WebUtils;
 
@@ -32,10 +31,10 @@ public class LoggingFilter extends OncePerRequestFilter {
     private static final Logger REQUEST_LOGGER = LogManager.getLogger(Request.class);
     private static final Logger ERROR_LOGGER = LogManager.getLogger(Error.class);
 
-    private RequestMappingHandlerMapping requestMappingHandlerMapping;
-    private UniqueIDGenerator generator;
-    private String ignorePatterns;
-    private String system;
+    private final RequestMappingHandlerMapping requestMappingHandlerMapping;
+    private final UniqueIDGenerator generator;
+    private final String ignorePatterns;
+    private final String system;
 
     public LoggingFilter(RequestMappingHandlerMapping requestMappingHandlerMapping, UniqueIDGenerator generator,
                          String ignorePatterns, String system) {
@@ -46,8 +45,8 @@ public class LoggingFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain chain) throws ServletException, IOException {
         if (StringUtils.isEmpty(this.system)) {
             throw new IllegalArgumentException("unidentified system");
         }
@@ -57,14 +56,14 @@ public class LoggingFilter extends OncePerRequestFilter {
         } else {
             this.generator.generateAndSetMDC(request);
 
-            String username = getUsername();
-            String handler = getHandlerMethod(request);
+            var username = getUsername();
+            var handler = getHandlerMethod(request);
 
-            RequestWrapper wrappedRequest = new RequestWrapper(request);
+            var wrappedRequest = new RequestWrapper(request);
             logRequest(wrappedRequest, username, this.system, handler);
 
-            ResponseWrapper wrappedResponse = new ResponseWrapper(response);
-            StopWatch watch = new StopWatch();
+            var wrappedResponse = new ResponseWrapper(response);
+            var watch = new StopWatch();
             try {
                 watch.start();
 
@@ -80,13 +79,13 @@ public class LoggingFilter extends OncePerRequestFilter {
     }
 
     private void logRequest(RequestWrapper requestWrapper, String username, String system, String handler) throws IOException {
-        String url = requestWrapper.getRequestURL().toString()
+        var url = requestWrapper.getRequestURL().toString()
                 + (requestWrapper.getQueryString() != null ? "?"
                 + requestWrapper.getQueryString() : "");
 
-        String payload = IOUtils.toString(requestWrapper.getInputStream(), requestWrapper.getCharacterEncoding());
+        var payload = IOUtils.toString(requestWrapper.getInputStream(), requestWrapper.getCharacterEncoding());
 
-        Request request = new Request(system.toLowerCase(), username, url, requestWrapper.getAllHeaders(),
+        var request = new Request(system.toLowerCase(), username, url, requestWrapper.getAllHeaders(),
                 requestWrapper.getMethod(), payload, handler);
 
         REQUEST_LOGGER.info(request.toLog());
@@ -96,9 +95,9 @@ public class LoggingFilter extends OncePerRequestFilter {
                              String handler, Throwable throwable) throws IOException {
         watch.stop();
 
-        String payload = IOUtils.toString(responseWrapper.getContentAsByteArray(), responseWrapper.getCharacterEncoding());
+        var payload = IOUtils.toString(responseWrapper.getContentAsByteArray(), responseWrapper.getCharacterEncoding());
 
-        Response response = new Response(responseWrapper.getStatus(), watch.getTotalTimeMillis(), system.toLowerCase(),
+        var response = new Response(responseWrapper.getStatus(), watch.getTotalTimeMillis(), system.toLowerCase(),
                 username, responseWrapper.getAllHeaders(), payload, handler, throwable);
 
         RESPONSE_LOGGER.info(response.toLog());
@@ -107,7 +106,7 @@ public class LoggingFilter extends OncePerRequestFilter {
     }
 
     private String getUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return "public";
         }
@@ -116,9 +115,9 @@ public class LoggingFilter extends OncePerRequestFilter {
 
     private String getHandlerMethod(HttpServletRequest request) {
         try {
-            HandlerExecutionChain handler = this.requestMappingHandlerMapping.getHandler(request);
+            var handler = this.requestMappingHandlerMapping.getHandler(request);
             if (Objects.nonNull(handler)) {
-                HandlerMethod handlerMethod = (HandlerMethod) handler.getHandler();
+                var handlerMethod = (HandlerMethod) handler.getHandler();
                 return handlerMethod.getBeanType().getSimpleName() + "." + handlerMethod.getMethod().getName();
             }
         } catch (Exception e) {

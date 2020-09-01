@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ResponseWrapper extends HttpServletResponseWrapper {
@@ -16,7 +15,7 @@ public class ResponseWrapper extends HttpServletResponseWrapper {
     private ServletOutputStreamWrapper copier;
     private PrintWriter writer;
 
-    public ResponseWrapper(HttpServletResponse response) throws IOException {
+    public ResponseWrapper(HttpServletResponse response) {
         super(response);
     }
 
@@ -66,7 +65,7 @@ public class ResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public String getAllHeaders() {
-        final Map<String, String> headers = new HashMap<>();
+        var headers = new HashMap<>();
         getHeaderNames().forEach(it -> headers.put(it, getHeader(it)));
         return headers.keySet().stream().map(key -> key + "=" + headers.get(key)).collect(Collectors.joining(", ", "{", "}"));
     }

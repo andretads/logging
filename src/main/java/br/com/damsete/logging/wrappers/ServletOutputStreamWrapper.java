@@ -8,8 +8,8 @@ import java.io.OutputStream;
 
 public class ServletOutputStreamWrapper extends ServletOutputStream {
 
-    private ByteArrayOutputStream copy;
-    private OutputStream outputStream;
+    private final ByteArrayOutputStream copy;
+    private final OutputStream outputStream;
 
     public ServletOutputStreamWrapper(OutputStream outputStream) {
         this.outputStream = outputStream;
@@ -33,5 +33,6 @@ public class ServletOutputStreamWrapper extends ServletOutputStream {
 
     @Override
     public void setWriteListener(WriteListener writeListener) {
+        // not used
     }
 }

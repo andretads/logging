@@ -5,13 +5,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Request {
 
-    private String system;
-    private String username;
-    private String url;
-    private String headers;
-    private String method;
-    private String payload;
-    private String handler;
+    private final String system;
+    private final String username;
+    private final String url;
+    private final String headers;
+    private final String method;
+    private final String payload;
+    private final String handler;
 
     public Request(String system, String username, String url, String headers, String method,
                    String payload, String handler) {

@@ -9,14 +9,14 @@ import static java.util.Optional.ofNullable;
 
 public class Response {
 
-    private int status;
-    private long duration;
-    private String system;
-    private String username;
-    private String headers;
-    private String payload;
-    private String handler;
-    private Error error;
+    private final int status;
+    private final long duration;
+    private final String system;
+    private final String username;
+    private final String headers;
+    private final String payload;
+    private final String handler;
+    private final Error error;
 
     public Response(int status, long duration, String system, String username, String headers,
                     String payload, String handler, Throwable throwable) {
